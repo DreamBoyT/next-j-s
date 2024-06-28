@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Image Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1>AI Image Generator</h1>
+
+        <div class="hamburger" onclick="toggleSidebar()" style="padding: 10px; width: 40px; height: 40px; background-color: rgba(0, 0, 0, 0.7); color: #fff; font-size: 1.5em; border-radius: 50%; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); cursor: pointer; display: flex; justify-content: center; align-items: center;">
+            ☰
+        </div>        
+        
+    </header>
+    <main>
+        <div class="card-container">
+            <div class="card" id="card1">
+
+                <div class="image-container card1-image-container">
+                    <img src="image1.png" alt="Sample Image" class="card1-image">
+                    <button class="icon-button-card1 recycle-button-card1" id="recycleButtonCard1">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button class="icon-button-card1 delete-button-card1" id="deleteButtonCard1">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+        
+                    <button class="download-button-card1" id="downloadButtonCard1" style="font-weight: bold;">Download</button>
+                </div>
+               
+                
+
+            </div>
+            <div class="card" id="card2">
+
+
+                <div class="image-container card2-image-container">
+
+                    <img src="image2.png" alt="Sample Image" class="card2-image">
+                    <button class="icon-button-card2 copy-button-card2" id="copyButtonCard2">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                    <button class="icon-button-card2 delete-button-card2" id="deleteButtonCard2">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+    
+                    <button class="icon-button-card2 left-arrow-button-card2" id="leftArrowButtonCard2">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <button class="icon-button-card2 right-arrow-button-card2" id="rightArrowButtonCard2">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+        
+                    <button class="download-button-card2" id="downloadButtonCard2" style="font-weight: bold;">Download</button>
+
+                </div>
+            
+            </div>
+        </div>
+        <div class="text-box-container">
+            <input type="text" class="text-box" id="promptInput" placeholder="Describe the image you want to create...">
+            <button class="generate" id="submit">
+                <i class="far fa-paper-plane"></i> 
+            </button> 
+        </div>
+    </main>
+
+    <aside class="sidebar" id="sidebar">
+        <button class="close-btn" onclick="toggleSidebar()">&#10006;</button>
+        
+        <div id="field1">
+            <h2>Image Style</h2>
+            <button class="icon-btn" id="Vivid" onclick="toggleActive(this, 'style')">
+                <i class="fas fa-sun"></i> <!-- Sunshine icon -->
+            </button>
+            <button class="icon-btn" id="Natural" onclick="toggleActive(this, 'style')">
+                <i class="fas fa-leaf"></i> <!-- Leaves icon -->
+            </button>
+            <hr>
+        </div>
+        <div id="field2">
+            <h2>Image Quality</h2>
+            <button class="icon-btn" id="HD" onclick="toggleActive(this, 'quality')">
+                HD <!-- Text representation for HD -->
+            </button>
+            <button class="icon-btn" id="Standard" onclick="toggleActive(this, 'quality')">
+                SD <!-- Text representation for SD -->
+            </button>
+            <hr>
+        </div>
+        <div id="field3">
+            <h2>Image Size</h2>
+            <button class="icon-btn" id="Desktop" onclick="toggleActive(this, 'size')">
+                <i class="fas fa-desktop"></i> <!-- Desktop icon -->
+            </button>
+            <button class="icon-btn" id="Website" onclick="toggleActive(this, 'size')">
+                <i class="fas fa-globe"></i> <!-- Website icon -->
+            </button>
+            <button class="icon-btn" id="Landscape" onclick="toggleActive(this, 'size')">
+                <i class="fas fa-mountain"></i> <!-- Landscape icon -->
+            </button>
+            <button class="icon-btn" id="Portrait" onclick="toggleActive(this, 'size')">
+                <i class="fas fa-user-alt"></i> <!-- Portrait icon -->
+            </button>
+            <button class="icon-btn" id="Square" onclick="toggleActive(this, 'size')">
+                <i class="fas fa-square"></i> <!-- Square icon -->
+            </button>
+        </div>
+               
+    </aside>
+
+    <script src="script.js"></script>
+</body>
+</html>
