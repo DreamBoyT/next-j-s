@@ -3,8 +3,8 @@ body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f0f0f0; /* Light background for contrast */
-    color: #000;
+    background-color: #343541; /* Light background for contrast */
+    color: #FFFFFF;
 }
 
 header {
@@ -31,11 +31,11 @@ header h1 {
     left: -320px; /* Adjusted width */
     width: 320px; /* Adjusted width */
     height: 100%;
-    background-color: #45474B;
+    background-color: #202123;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
     overflow-x: hidden;
     transition: 0.3s;
-    padding-top: 60px;
+    padding-top: 10px;
     z-index: 1000; /* Increase z-index value */
 }
 
@@ -55,7 +55,7 @@ header h1 {
 }
 
 .sidebar div {
-    padding: 10px;
+    padding-left: 10px;
 }
 
 .sidebar h2 {
@@ -97,7 +97,7 @@ hr {
     font-weight: 400;
     line-height: 1.5;
     color: #212529;
-    background-color: #EEEEEE;
+    background-color: #40414F;
     background-clip: padding-box;
     border: 1px solid #ced4da;
     appearance: none;
@@ -134,7 +134,7 @@ hr {
 }
 
 .text-box:focus {
-    color: #212529;
+    color: #40414F;
     background-color: #fff;
     border-color: #b7b7b7;
     outline: 0;
@@ -153,7 +153,7 @@ hr {
 }
 
 .card {
-    background-color: #EEEEEE; /* Card background color */
+    background-color: #EEEDEB; /* Card background color */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* subtle box shadow */
     border-radius: 10px; /* Rounded corners */
     padding: 20px;
@@ -336,7 +336,10 @@ hr {
 /* -------------------- */
 
 /* General button styling */
+
+/* Tooltip container */
 .icon-btn {
+    position: relative; /* Position relative to contain the tooltip */
     background-color: #FFFFFF; /* White background */
     color: rgba(0, 0, 0, 0.6);  /* Black icons/text */
     border: 2px solid transparent; /* Border for active state */
@@ -365,8 +368,32 @@ hr {
     color: #fff; /* White icons/text on hover */
 }
 
+/* Tooltip text */
+.icon-btn::after {
+    content: attr(id); /* Use the ID attribute value as the tooltip text */
+    position: absolute;
+    bottom: 100%; /* Position above the button */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333; /* Dark background for tooltip */
+    color: #fff; /* White text for tooltip */
+    padding: 5px 10px;
+    border-radius: 5px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s;
+    font-size: 0.8em; /* Slightly smaller font size for tooltip */
+}
+
+/* Show tooltip on hover */
+.icon-btn:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
 /* Specific button styles */
-#Vivid, #Natural, #HD, #Standard, #Desktop, #Website, #Landscape, #Portrait, #Square {
+#Vivid, #Natural, #HD, #Standard, #Desktop, #Website, #Landscape, #Portrait, #Square, #Guide {
     font-weight: bold;
 }
 
@@ -377,9 +404,163 @@ hr {
     height: 60px; /* Set height */
     padding: 0; /* Remove padding */
 }
+/* -------------------------------------------responsiveness code------------------------------------- */
 
+/* Media Queries for Responsiveness */
 
+/* Mobile Devices */
+@media (max-width: 600px) {
+    header h1 {
+        font-size: 2em;
+    }
 
+    .hamburger {
+        font-size: 1em;
+        left: 2px;
+    }
 
-/* --------------------  */
+    .sidebar {
+        width: 250px; /* Adjusted width for mobile */
+        left: -250px;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    .text-box-container {
+        width: 80%;
+        margin: 20px auto;
+        padding-left: 0;
+    }
+
+    .generate {
+        right: 10px; /* Adjusted right position */
+    }
+
+    .card-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #card1, #card2 {
+        flex-basis: 100%;
+        margin: 10px 0;
+    }
+
+    .icon-btn {
+        width: 40px;
+        height: 40px;
+    }
+
+    button#submit.generate{
+        left: 285px;
+    }
+}
+
+/* Tablets */
+@media (min-width: 601px) and (max-width: 992px) {
+    header h1 {
+        font-size: 3em;
+    }
+
+    .hamburger {
+        font-size: 1.3em;
+    }
+
+    .sidebar {
+        width: 300px;
+        left: -300px;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    .text-box-container {
+        width: 70%;
+        margin: 20px auto;
+        padding-left: 0;
+    }
+
+    .generate {
+        right: 15px;
+    }
+
+    .card-container {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    #card1, #card2 {
+        flex-basis: 45%;
+        margin: 10px;
+    }
+
+    .icon-btn {
+        width: 50px;
+        height: 50px;
+    }
+    
+    button#submit.generate{
+        left: 530px;
+    }
+}
+
+/* Desktops */
+@media (min-width: 993px) {
+    header h1 {
+        font-size: 4em;
+    }
+
+    .hamburger {
+        font-size: 1.5em;
+    }
+
+    .sidebar {
+        width: 320px;
+        left: -320px;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    .text-box-container {
+        width: 55%;
+        margin: 20px 0 0 65px;
+        padding-left: 20px;
+    }
+
+    .generate {
+        right: 45px;
+    }
+
+    .card-container {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    #card1 {
+        flex-basis: 55%;
+    }
+
+    #card2 {
+        flex-basis: 35%;
+    }
+
+    .icon-btn {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+/* Media query for screens 1900px and larger */
+@media (min-width: 1900px) {
+    div.text-box-container {
+        left: 15px;
+    }
+}
 
