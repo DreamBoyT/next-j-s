@@ -4,15 +4,29 @@ function toggleSidebar() {
 // Event listener for the submit button in the prompt field
 document.getElementById("submit").addEventListener("click", generateImage);
 
+// ------------------
+
 function generateImage() {
-    const prompt = document.getElementById("promptInput").value;
+    let prompt = document.getElementById("promptInput").value;
     const style = document.querySelector("#field1 .icon-btn.active")?.id || "";
     const quality = document.querySelector("#field2 .icon-btn.active")?.id || "";
     const size = document.querySelector("#field3 .icon-btn.active")?.id || "";
+    const guide = document.querySelector("#field4 .icon-btn.active")?.id || "";
 
     if (prompt.trim() === "") {
         alert("Please enter an image description.");
         return;
+    }
+
+    // Augment the prompt if the Style Guide is selected
+    if (guide === "Guide") {
+        prompt = `
+        Your task is to create an image based on the description below.
+        The image should feature natural lighting, have a professional appearance, 
+        and convey a dynamic look. 
+
+        Description: ${prompt}
+        `;
     }
 
     const imageContainer = document.querySelector("#card1 .card1-image-container");
@@ -93,6 +107,8 @@ function generateImage() {
     </span>`;
     });
 }
+
+// ----------
 
 function resizeImage(url, width, height) {
     return new Promise((resolve, reject) => {
@@ -196,6 +212,7 @@ deleteButton.addEventListener('click', () => {
 });
 
 // Event listener for the recycle button in Card 2
+
 recycleButton.addEventListener('click', () => {
     // Move the current image to Card 3
     if (currentImageUrl) {
@@ -203,20 +220,23 @@ recycleButton.addEventListener('click', () => {
         card3Image.src = currentImageUrl;
         card3Image.alt = "Previously Generated Image";
         card3Image.classList.add("card2-image");
-        card3Images.push(card3Image);
+
+        // Insert the current image at the beginning of card3Images array
+        card3Images.unshift(card3Image);
 
         // Display the current image from card3Images array
-        displayCard3Image(currentCard3ImageIndex);
+        displayCard3Image(0); // Display the first image
 
         // Generate a new image using the same prompt
         generateImage();
 
         // Scroll to the bottom of Card 3 to show newly added images
-        card3ImageContainer.scrollTop = card3ImageContainer.scrollHeight;
+        card3ImageContainer.scrollTop = 0; // Scroll to the top
     } else {
         alert("No image to regenerate.");
     }
 });
+
 
 // main generate button stacking to the carousel
 
@@ -227,17 +247,19 @@ generate.addEventListener('click', () => {
         card2Image.src = currentImageUrl;
         card2Image.alt = "Previously Generated Image";
         card2Image.classList.add("card2-image");
-        card3Images.push(card2Image);
+
+        // Insert the current image at the beginning of card3Images array
+        card3Images.unshift(card2Image);
 
         // Display the current image from card3Images array
-        displayCard3Image(currentCard3ImageIndex);
+        displayCard3Image(0); // Display the first image
 
         // Generate a new image using the same prompt
         generateImage();
 
         // Scroll to the bottom of Card 3 to show newly added images
-        card3ImageContainer.scrollTop = card3ImageContainer.scrollHeight;
-    } 
+        card3ImageContainer.scrollTop = 0; // Scroll to the top
+    }
 });
 
 // Event listener for the left arrow button in Card 3
@@ -258,6 +280,7 @@ rightArrowButtonCard3.addEventListener('click', () => {
 
 
 // Function to display image in Card 3 based on the index
+
 function displayCard3Image(index) {
     card3ImageContainer.innerHTML = "";
     if (card3Images.length > 0) {
@@ -317,7 +340,14 @@ copyButtonCard3.addEventListener('click', () => {
 // random
 
 function toggleActive(button, group) {
-    const buttons = document.querySelectorAll(`#field${group == 'style' ? 1 : group == 'quality' ? 2 : 3} .icon-btn`);
+    const groupMap = {
+        style: 1,
+        quality: 2,
+        size: 3,
+        guide: 4
+    };
+    
+    const buttons = document.querySelectorAll(`#field${groupMap[group]} .icon-btn`);
     buttons.forEach(btn => {
         if (btn !== button) {
             btn.classList.remove('active');
@@ -334,3 +364,16 @@ function toggleActive(button, group) {
 function toggleSidebar() {
     document.getElementById("sidebar").classList.toggle("active");
 }
+
+// --------------------------
+
+// key down function 
+
+document.getElementById('promptInput').addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        document.getElementById('submit').click();
+    }
+});
+
+
+// --------------------------
