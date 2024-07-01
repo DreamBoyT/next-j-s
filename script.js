@@ -7,7 +7,7 @@ document.getElementById("submit").addEventListener("click", generateImage);
 // ------------------
 
 function generateImage() {
-    let prompt = document.getElementById("promptInput").value;
+    const prompt = document.getElementById("promptInput").value;
     const style = document.querySelector("#field1 .icon-btn.active")?.id || "";
     const quality = document.querySelector("#field2 .icon-btn.active")?.id || "";
     const size = document.querySelector("#field3 .icon-btn.active")?.id || "";
@@ -16,17 +16,6 @@ function generateImage() {
     if (prompt.trim() === "") {
         alert("Please enter an image description.");
         return;
-    }
-
-    // Augment the prompt if the Style Guide is selected
-    if (guide === "Guide") {
-        prompt = `
-        Your task is to create an image based on the description below.
-        The image should feature natural lighting, have a professional appearance, 
-        and convey a dynamic look. 
-
-        Description: ${prompt}
-        `;
     }
 
     const imageContainer = document.querySelector("#card1 .card1-image-container");
@@ -45,68 +34,64 @@ function generateImage() {
     .then(response => response.json())
     .then(data => {
         if (data.imageUrls) {
-            data.imageUrls.forEach(url => {
-                const img = new Image();
-                img.src = url;
-                img.alt = prompt;
-                img.classList.add("card1-image");
-                img.onload = () => {
-                    loadingSpinner.remove();
-                    // Enable buttons
-                    recycleButton.disabled = false;
-                    deleteButton.disabled = false;
-                    currentImageUrl = img.src; // Store the current image URL for download
-                };
+            // Use the first image URL from the response
+            const url = data.imageUrls[0];
+            const img = new Image();
+            img.src = url;
+            img.alt = prompt;
+            img.classList.add("card1-image");
 
-                if (size === "Desktop" || size === "Website") {
-                    const [width, height] = size === "Desktop" ? [1600, 900] : [1920, 1080];
-                    resizeImage(url, width, height).then(resizedUrl => {
-                        img.src = resizedUrl;
-                        imageContainer.innerHTML = "";  // Clear loading spinner
-                        imageContainer.appendChild(img);
-                        // Append buttons to ensure they are on top
-                        appendButtons();
-                    });
-                } else {
-                    imageContainer.innerHTML = "";  // Clear loading spinner
-                    imageContainer.appendChild(img);
-                    // Append buttons to ensure they are on top
-                    appendButtons();
-                }
-            });
+            img.onload = () => {
+                loadingSpinner.remove();
+                imageContainer.innerHTML = "";  // Clear loading spinner
+                imageContainer.appendChild(img);
+                // Append buttons to ensure they are on top
+                appendButtons();
+                recycleButton.disabled = false;
+                deleteButton.disabled = false;
+                currentImageUrl = img.src; // Store the current image URL for download
+            };
+
+            if (size === "Desktop" || size === "Website") {
+                const [width, height] = size === "Desktop" ? [1600, 900] : [1920, 1080];
+                resizeImage(url, width, height).then(resizedUrl => {
+                    img.src = resizedUrl;
+                });
+            }
         } else {
             loadingSpinner.remove();
             imageContainer.innerHTML = `
-    <span style="
-        color: #45474B; 
-        font-weight: bold; 
-        font-size: 60px; 
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); 
-        background: -webkit-linear-gradient(#45474B, #6B6E73); 
-        -webkit-background-clip: text; 
-        -webkit-text-fill-color: transparent;
-    ">
-        Failed to generate image. Please try again...
-    </span>`;
+                <span style="
+                    color: #45474B; 
+                    font-weight: bold; 
+                    font-size: 60px; 
+                    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); 
+                    background: -webkit-linear-gradient(#45474B, #6B6E73); 
+                    -webkit-background-clip: text; 
+                    -webkit-text-fill-color: transparent;
+                ">
+                    Failed to generate image. Please try again...
+                </span>`;
         }
     })
     .catch(error => {
         console.error("Error generating image:", error);
         loadingSpinner.remove();
         imageContainer.innerHTML = `
-    <span style="
-        color: #45474B; 
-        font-weight: bold; 
-        font-size: 60px; 
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); 
-        background: -webkit-linear-gradient(#45474B, #6B6E73); 
-        -webkit-background-clip: text; 
-        -webkit-text-fill-color: transparent;
-    ">
-        Failed to generate image. Please try again...
-    </span>`;
+            <span style="
+                color: #45474B; 
+                font-weight: bold; 
+                font-size: 60px; 
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); 
+                background: -webkit-linear-gradient(#45474B, #6B6E73); 
+                -webkit-background-clip: text; 
+                -webkit-text-fill-color: transparent;
+            ">
+                Failed to generate image. Please try again...
+            </span>`;
     });
 }
+
 
 // ----------
 
