@@ -24,72 +24,93 @@ function generateImage() {
     imageContainer.innerHTML = "";
     imageContainer.appendChild(loadingSpinner);
 
-    fetch("https://dall-t.azurewebsites.net/api/httpTriggerts", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ prompt, style, quality, size }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.imageUrls) {
-            // Use the first image URL from the response
-            const url = data.imageUrls[0];
-            const img = new Image();
-            img.src = url;
-            img.alt = prompt;
-            img.classList.add("card1-image");
+    const retryCount = 3; // Number of retries
+    const initialDelay = 1000; // Initial delay in milliseconds
+    let currentRetry = 0;
 
-            img.onload = () => {
-                loadingSpinner.remove();
-                imageContainer.innerHTML = "";  // Clear loading spinner
-                imageContainer.appendChild(img);
-                // Append buttons to ensure they are on top
-                appendButtons();
-                recycleButton.disabled = false;
-                deleteButton.disabled = false;
-                currentImageUrl = img.src; // Store the current image URL for download
-            };
-
-            if (size === "Desktop" || size === "Website") {
-                const [width, height] = size === "Desktop" ? [1600, 900] : [1920, 1080];
-                resizeImage(url, width, height).then(resizedUrl => {
-                    img.src = resizedUrl;
-                });
+    function fetchImageWithRetry() {
+        fetch("https://dall-t.azurewebsites.net/api/httpTriggerts", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ prompt, style, quality, size }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
             }
-        } else {
-            loadingSpinner.remove();
-            imageContainer.innerHTML = `
-                <span style="
-                    color: #45474B; 
-                    font-weight: bold; 
-                    font-size: 60px; 
-                    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); 
-                    background: -webkit-linear-gradient(#45474B, #6B6E73); 
-                    -webkit-background-clip: text; 
-                    -webkit-text-fill-color: transparent;
-                ">
-                    Failed to generate image. Please try again...
-                </span>`;
-        }
-    })
-    .catch(error => {
-        console.error("Error generating image:", error);
-        loadingSpinner.remove();
-        imageContainer.innerHTML = `
-            <span style="
-                color: #45474B; 
-                font-weight: bold; 
-                font-size: 60px; 
-                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); 
-                background: -webkit-linear-gradient(#45474B, #6B6E73); 
-                -webkit-background-clip: text; 
-                -webkit-text-fill-color: transparent;
-            ">
-                Failed to generate image. Please try again...
-            </span>`;
-    });
+            return response.json();
+        })
+        .then(data => {
+            if (data.imageUrls) {
+                // Use the first image URL from the response
+                const url = data.imageUrls[0];
+                const img = new Image();
+                img.src = url;
+                img.alt = prompt;
+                img.classList.add("card1-image");
+
+                img.onload = () => {
+                    loadingSpinner.remove();
+                    imageContainer.innerHTML = "";  // Clear loading spinner
+                    imageContainer.appendChild(img);
+                    // Append buttons to ensure they are on top
+                    appendButtons();
+                    recycleButton.disabled = false;
+                    deleteButton.disabled = false;
+                    currentImageUrl = img.src; // Store the current image URL for download
+                };
+
+                if (size === "Desktop" || size === "Website") {
+                    const [width, height] = size === "Desktop" ? [1600, 900] : [1920, 1080];
+                    resizeImage(url, width, height).then(resizedUrl => {
+                        img.src = resizedUrl;
+                    });
+                }
+            } else {
+                loadingSpinner.remove();
+                imageContainer.innerHTML = `
+                    <span style="
+                        color: #45474B; 
+                        font-weight: bold; 
+                        font-size: 60px; 
+                        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); 
+                        background: -webkit-linear-gradient(#45474B, #6B6E73); 
+                        -webkit-background-clip: text; 
+                        -webkit-text-fill-color: transparent;
+                    ">
+                        Failed to generate image. Please try again...
+                    </span>`;
+            }
+        })
+        .catch(error => {
+            console.error("Error generating image:", error);
+            if (currentRetry < retryCount) {
+                // Exponential backoff calculation
+                const delay = initialDelay * Math.pow(2, currentRetry);
+                currentRetry++;
+                setTimeout(fetchImageWithRetry, delay);
+            } else {
+                loadingSpinner.remove();
+                imageContainer.innerHTML = `
+                    <span style="
+                        color: #45474B; 
+                        font-weight: bold; 
+                        font-size: 60px; 
+                        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); 
+                        background: -webkit-linear-gradient(#45474B, #6B6E73); 
+                        -webkit-background-clip: text; 
+                        -webkit-text-fill-color: transparent;
+                    ">
+                        Failed to generate image after retries. Please try again later...
+                    </span>`;
+            }
+        });
+    }
+
+    // Initial fetch attempt
+    fetchImageWithRetry();
 }
 
 
