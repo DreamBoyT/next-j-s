@@ -557,4 +557,22 @@ hr {
     }
 }
 
+/* Extra Large Desktops */
+@media (min-width: 1600px) {
+    #card1 {
+        height: 700px; /* Further increase height for very large screens */
+    }
+
+    #card2 {
+        height: 700px; /* Further increase height for very large screens */
+    }
+
+    .text-box-container {
+        width: 55%; /* Same width as Card 1 */
+        margin: 20px 0 0 105px; /* Add left margin to move it right */
+        padding-left: 20px; /* Same left padding as Card 1 */
+        position: relative; /* Ensure relative positioning for absolute child */
+    }
+    
+}
 
