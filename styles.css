@@ -557,10 +557,4 @@ hr {
     }
 }
 
-/* Media query for screens 1900px and larger */
-@media (min-width: 1900px) {
-    div.text-box-container {
-        left: 15px;
-    }
-}
 
