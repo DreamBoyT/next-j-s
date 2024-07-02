@@ -8,13 +8,16 @@ body {
 }
 
 header {
-    text-align: center;
+    text-align: left;
     padding: 20px;
 }
 
 header h1 {
-    font-size: 4em;
+    font-size: 1em;
     margin: 0;
+    position: relative;
+    left: 100px;
+    bottom: 5px;
 }
 
 .hamburger {
@@ -592,4 +595,3 @@ hr {
     }
     
 }
-
