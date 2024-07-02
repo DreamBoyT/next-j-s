@@ -1,11 +1,18 @@
+let isGenerating = false;
+
+// Function to toggle the sidebar
 function toggleSidebar() {
     document.getElementById("sidebar").classList.toggle("active");
 }
+
 // Event listener for the submit button in the prompt field
-document.getElementById("submit").addEventListener("click", generateImage);
+document.getElementById("submit").addEventListener("click", () => {
+    if (!isGenerating) {
+        generateImage();
+    }
+});
 
-// ------------------
-
+// Function to generate image
 function generateImage() {
     const prompt = document.getElementById("promptInput").value;
     const style = document.querySelector("#field1 .icon-btn.active")?.id || "";
@@ -18,17 +25,25 @@ function generateImage() {
         return;
     }
 
-    const imageContainer = document.querySelector("#card1 .card1-image-container");
-    const loadingSpinner = document.createElement("div");
-    loadingSpinner.className = "loading-spinner";
-    imageContainer.innerHTML = "";
-    imageContainer.appendChild(loadingSpinner);
+    const imageContainerCard1 = document.querySelector("#card1 .card1-image-container");
+    const loadingSpinnerCard1 = document.createElement("div");
+    loadingSpinnerCard1.className = "unique-loading-spinner";
+    imageContainerCard1.innerHTML = "";
+    imageContainerCard1.appendChild(loadingSpinnerCard1);
+
+    const imageContainerCard2 = document.querySelector("#card2 .card2-image-container");
+    const loadingSpinnerCard2 = document.createElement("div");
+    loadingSpinnerCard2.className = "unique-loading-spinner";
+    imageContainerCard2.innerHTML = "";
+    imageContainerCard2.appendChild(loadingSpinnerCard2);
 
     const retryCount = 3; // Number of retries
     const initialDelay = 1000; // Initial delay in milliseconds
     let currentRetry = 0;
 
     function fetchImageWithRetry() {
+        isGenerating = true; // Set flag to true to prevent multiple requests
+
         fetch("https://dall-t.azurewebsites.net/api/httpTriggerts", {
             method: "POST",
             headers: {
@@ -44,33 +59,49 @@ function generateImage() {
         })
         .then(data => {
             if (data.imageUrls) {
-                // Use the first image URL from the response
                 const url = data.imageUrls[0];
-                const img = new Image();
-                img.src = url;
-                img.alt = prompt;
-                img.classList.add("card1-image");
+                const imgCard1 = new Image();
+                const imgCard2 = new Image();
+                imgCard1.src = url;
+                imgCard2.src = url;
+                imgCard1.alt = prompt;
+                imgCard2.alt = prompt;
+                imgCard1.classList.add("card1-image");
+                imgCard2.classList.add("card2-image");
 
-                img.onload = () => {
-                    loadingSpinner.remove();
-                    imageContainer.innerHTML = "";  // Clear loading spinner
-                    imageContainer.appendChild(img);
-                    // Append buttons to ensure they are on top
+                imgCard1.onload = () => {
+                    loadingSpinnerCard1.remove();
+                    imageContainerCard1.innerHTML = ""; // Clear loading spinner
+                    imageContainerCard1.appendChild(imgCard1);
                     appendButtons();
                     recycleButton.disabled = false;
                     deleteButton.disabled = false;
-                    currentImageUrl = img.src; // Store the current image URL for download
+                    currentImageUrl = imgCard1.src; // Store the current image URL
+
+                    isGenerating = false; // Reset flag after successful image load
                 };
+
+                imgCard2.onload = () => {
+                    loadingSpinnerCard2.remove();
+                    imageContainerCard2.innerHTML = ""; // Clear loading spinner
+                    imageContainerCard2.appendChild(imgCard2);
+                    appendCard3Buttons();
+                };
+
+                updateCarouselImages(url); // Update the carousel images with the new image URL
 
                 if (size === "Desktop" || size === "Website") {
                     const [width, height] = size === "Desktop" ? [1600, 900] : [1920, 1080];
                     resizeImage(url, width, height).then(resizedUrl => {
-                        img.src = resizedUrl;
+                        imgCard1.src = resizedUrl;
+                        imgCard2.src = resizedUrl;
+                        updateCarouselImages(resizedUrl); // Update the carousel images with the resized URL
                     });
                 }
             } else {
-                loadingSpinner.remove();
-                imageContainer.innerHTML = `
+                loadingSpinnerCard1.remove();
+                loadingSpinnerCard2.remove();
+                imageContainerCard1.innerHTML = `
                     <span style="
                         color: #45474B; 
                         font-weight: bold; 
@@ -82,18 +113,32 @@ function generateImage() {
                     ">
                         Failed to generate image. Please try again...
                     </span>`;
+                imageContainerCard2.innerHTML = `
+                    <span style="
+                        color: #45474B; 
+                        font-weight: bold; 
+                        font-size: 60px; 
+                        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); 
+                        background: -webkit-linear-gradient(#45474B, #6B6E73); 
+                        -webkit-background-clip: text; 
+                        -webkit-text-fill-color: transparent;
+                    ">
+                        Failed to generate image. Please try again...
+                    </span>`;
+
+                isGenerating = false; // Reset flag on error
             }
         })
         .catch(error => {
             console.error("Error generating image:", error);
             if (currentRetry < retryCount) {
-                // Exponential backoff calculation
                 const delay = initialDelay * Math.pow(2, currentRetry);
                 currentRetry++;
                 setTimeout(fetchImageWithRetry, delay);
             } else {
-                loadingSpinner.remove();
-                imageContainer.innerHTML = `
+                loadingSpinnerCard1.remove();
+                loadingSpinnerCard2.remove();
+                imageContainerCard1.innerHTML = `
                     <span style="
                         color: #45474B; 
                         font-weight: bold; 
@@ -105,6 +150,20 @@ function generateImage() {
                     ">
                         Failed to generate image after retries. Please try again later...
                     </span>`;
+                imageContainerCard2.innerHTML = `
+                    <span style="
+                        color: #45474B; 
+                        font-weight: bold; 
+                        font-size: 60px; 
+                        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); 
+                        background: -webkit-linear-gradient(#45474B, #6B6E73); 
+                        -webkit-background-clip: text; 
+                        -webkit-text-fill-color: transparent;
+                    ">
+                        Failed to generate image after retries. Please try again later...
+                    </span>`;
+
+                isGenerating = false; // Reset flag after retries
             }
         });
     }
@@ -113,9 +172,9 @@ function generateImage() {
     fetchImageWithRetry();
 }
 
+// ----------------------------------------------
 
-// ----------
-
+// Function to resize image
 function resizeImage(url, width, height) {
     return new Promise((resolve, reject) => {
         const img = new Image();
@@ -218,54 +277,38 @@ deleteButton.addEventListener('click', () => {
 });
 
 // Event listener for the recycle button in Card 2
-
 recycleButton.addEventListener('click', () => {
-    // Move the current image to Card 3
-    if (currentImageUrl) {
+    if (currentImageUrl && !isGenerating) {
         const card3Image = new Image();
         card3Image.src = currentImageUrl;
         card3Image.alt = "Previously Generated Image";
         card3Image.classList.add("card2-image");
 
-        // Insert the current image at the beginning of card3Images array
         card3Images.unshift(card3Image);
-
-        // Display the current image from card3Images array
-        displayCard3Image(0); // Display the first image
-
-        // Generate a new image using the same prompt
+        displayCard3Image(0);
         generateImage();
-
-        // Scroll to the bottom of Card 3 to show newly added images
         card3ImageContainer.scrollTop = 0; // Scroll to the top
-    } else {
+    } else if (!currentImageUrl) {
         alert("No image to regenerate.");
     }
 });
 
-
-// main generate button stacking to the carousel
-
+// Event listener for the main generate button
 generate.addEventListener('click', () => {
-    // Move the current image to Card 3
-    if (currentImageUrl) {
+    if (currentImageUrl && !isGenerating) {
         const card2Image = new Image();
         card2Image.src = currentImageUrl;
         card2Image.alt = "Previously Generated Image";
         card2Image.classList.add("card2-image");
 
-        // Insert the current image at the beginning of card3Images array
         card3Images.unshift(card2Image);
-
-        // Display the current image from card3Images array
-        displayCard3Image(0); // Display the first image
-
-        // Generate a new image using the same prompt
-        generateImage();
-
-        // Scroll to the bottom of Card 3 to show newly added images
-        card3ImageContainer.scrollTop = 0; // Scroll to the top
+        displayCard3Image(0);
     }
+
+    if (!isGenerating) {
+        generateImage();
+    }
+    card3ImageContainer.scrollTop = 0; // Scroll to the top
 });
 
 // Event listener for the left arrow button in Card 3
@@ -284,22 +327,20 @@ rightArrowButtonCard3.addEventListener('click', () => {
     }
 });
 
-
 // Function to display image in Card 3 based on the index
-
 function displayCard3Image(index) {
     card3ImageContainer.innerHTML = "";
     if (card3Images.length > 0) {
         const img = card3Images[index];
         card3ImageContainer.appendChild(img);
-        appendCard3Buttons(); // Append buttons on top of the image
+        appendCard3Buttons();
     } else {
         const sampleImage = new Image();
         sampleImage.src = "image2.png"; // Path to the default image
         sampleImage.alt = "Sample Image";
         sampleImage.classList.add("card2-image");
         card3ImageContainer.appendChild(sampleImage);
-        appendCard3Buttons(); // Append buttons on top of the default image
+        appendCard3Buttons();
     }
 }
 
@@ -308,8 +349,8 @@ downloadButtonCard3.addEventListener('click', () => {
     if (card3Images.length > 0 && currentCard3ImageIndex >= 0 && currentCard3ImageIndex < card3Images.length) {
         const link = document.createElement('a');
         link.href = card3Images[currentCard3ImageIndex].src;
-        link.download = 'generated_image.png'; // You can change the default download name
-        link.target = '_blank'; // Open in a new tab
+        link.download = 'generated_image.png';
+        link.target = '_blank';
         link.click();
     } else {
         alert("No image to download.");
@@ -319,10 +360,8 @@ downloadButtonCard3.addEventListener('click', () => {
 // Event listener for the delete button in Card 3
 deleteButtonCard3.addEventListener('click', () => {
     if (card3Images.length > 0 && currentCard3ImageIndex >= 0 && currentCard3ImageIndex < card3Images.length) {
-        card3Images.splice(currentCard3ImageIndex, 1); // Remove current image from the array
-        currentCard3ImageIndex = Math.min(currentCard3ImageIndex, card3Images.length - 1); // Adjust current index
-
-        // Display the updated image in Card 3
+        card3Images.splice(currentCard3ImageIndex, 1);
+        currentCard3ImageIndex = Math.min(currentCard3ImageIndex, card3Images.length - 1);
         displayCard3Image(currentCard3ImageIndex);
     } else {
         alert("No image to delete.");
@@ -341,10 +380,7 @@ copyButtonCard3.addEventListener('click', () => {
     }
 });
 
-// ------
-
-// random
-
+// Toggle active class for icon buttons
 function toggleActive(button, group) {
     const groupMap = {
         style: 1,
@@ -352,7 +388,7 @@ function toggleActive(button, group) {
         size: 3,
         guide: 4
     };
-    
+
     const buttons = document.querySelectorAll(`#field${groupMap[group]} .icon-btn`);
     buttons.forEach(btn => {
         if (btn !== button) {
@@ -367,19 +403,21 @@ function toggleActive(button, group) {
     }
 }
 
-function toggleSidebar() {
-    document.getElementById("sidebar").classList.toggle("active");
-}
-
-// --------------------------
-
-// key down function 
-
+// Event listener for the Enter key in the prompt input field
 document.getElementById('promptInput').addEventListener('keydown', function(event) {
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' && !isGenerating) {
         document.getElementById('submit').click();
     }
 });
 
+// Function to update the carousel images array
+function updateCarouselImages(url) {
+    const card3Image = new Image();
+    card3Image.src = url;
+    card3Image.alt = "Generated Image";
+    card3Image.classList.add("card2-image");
 
-// --------------------------
+    card3Images.unshift(card3Image);
+    currentCard3ImageIndex = 0;
+    displayCard3Image(currentCard3ImageIndex);
+}
