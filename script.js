@@ -12,7 +12,7 @@ document.getElementById("submit").addEventListener("click", () => {
     }
 });
 
-// Function to generate image
+// --------------------------------
 function generateImage() {
     const prompt = document.getElementById("promptInput").value;
     const style = document.querySelector("#field1 .icon-btn.active")?.id || "";
@@ -32,10 +32,7 @@ function generateImage() {
     imageContainerCard1.appendChild(loadingSpinnerCard1);
 
     const imageContainerCard2 = document.querySelector("#card2 .card2-image-container");
-    const loadingSpinnerCard2 = document.createElement("div");
-    loadingSpinnerCard2.className = "unique-loading-spinner";
-    imageContainerCard2.innerHTML = "";
-    imageContainerCard2.appendChild(loadingSpinnerCard2);
+    // No loading spinner for card2; it retains the previous image
 
     const retryCount = 3; // Number of retries
     const initialDelay = 1000; // Initial delay in milliseconds
@@ -79,19 +76,30 @@ function generateImage() {
                     currentImageUrl = imgCard1.src; // Store the current image URL
 
                     isGenerating = false; // Reset flag after successful image load
-                };
 
-                imgCard2.onload = () => {
-                    loadingSpinnerCard2.remove();
-                    imageContainerCard2.innerHTML = ""; // Clear loading spinner
+                    // Load image in card2 after imgCard1 is loaded
+                    imageContainerCard2.innerHTML = ""; // Clear previous image
                     imageContainerCard2.appendChild(imgCard2);
                     appendCard3Buttons();
+                    updateCarouselImages(url); // Update the carousel images with the new image URL
                 };
 
-                updateCarouselImages(url); // Update the carousel images with the new image URL
-
-                if (size === "Desktop" || size === "Website") {
-                    const [width, height] = size === "Desktop" ? [1600, 900] : [1920, 1080];
+                if (size === "Desktop" || size === "Website" || size === "Portrait" || size === "Landscape") {
+                    let width, height;
+                    switch(size) {
+                        case "Desktop":
+                            [width, height] = [1600, 900];
+                            break;
+                        case "Website":
+                            [width, height] = [1920, 1080];
+                            break;
+                        case "Portrait":
+                            [width, height] = [1080, 1920];
+                            break;
+                        case "Landscape":
+                            [width, height] = [1920, 1080];
+                            break;
+                    }
                     resizeImage(url, width, height).then(resizedUrl => {
                         imgCard1.src = resizedUrl;
                         imgCard2.src = resizedUrl;
@@ -100,7 +108,6 @@ function generateImage() {
                 }
             } else {
                 loadingSpinnerCard1.remove();
-                loadingSpinnerCard2.remove();
                 imageContainerCard1.innerHTML = `
                     <span style="
                         color: #45474B; 
@@ -113,18 +120,7 @@ function generateImage() {
                     ">
                         Failed to generate image. Please try again...
                     </span>`;
-                imageContainerCard2.innerHTML = `
-                    <span style="
-                        color: #45474B; 
-                        font-weight: bold; 
-                        font-size: 60px; 
-                        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); 
-                        background: -webkit-linear-gradient(#45474B, #6B6E73); 
-                        -webkit-background-clip: text; 
-                        -webkit-text-fill-color: transparent;
-                    ">
-                        Failed to generate image. Please try again...
-                    </span>`;
+                // No changes to imageContainerCard2; it retains the previous image
 
                 isGenerating = false; // Reset flag on error
             }
@@ -137,7 +133,6 @@ function generateImage() {
                 setTimeout(fetchImageWithRetry, delay);
             } else {
                 loadingSpinnerCard1.remove();
-                loadingSpinnerCard2.remove();
                 imageContainerCard1.innerHTML = `
                     <span style="
                         color: #45474B; 
@@ -150,18 +145,7 @@ function generateImage() {
                     ">
                         Failed to generate image after retries. Please try again later...
                     </span>`;
-                imageContainerCard2.innerHTML = `
-                    <span style="
-                        color: #45474B; 
-                        font-weight: bold; 
-                        font-size: 60px; 
-                        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); 
-                        background: -webkit-linear-gradient(#45474B, #6B6E73); 
-                        -webkit-background-clip: text; 
-                        -webkit-text-fill-color: transparent;
-                    ">
-                        Failed to generate image after retries. Please try again later...
-                    </span>`;
+                // No changes to imageContainerCard2; it retains the previous image
 
                 isGenerating = false; // Reset flag after retries
             }
