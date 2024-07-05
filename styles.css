@@ -7,10 +7,152 @@ body {
     color: #FFFFFF;
 }
 
-header {
+/* header {
     text-align: left;
     padding: 20px;
+} */
+/* ------------------------ */
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    position: relative; /* Ensure relative positioning for absolute child */
 }
+/* ------------------------------- */
+
+/* Login Button */
+
+#loginButton {
+    display: block;
+    background-color: #fff; /* White background */
+    color: #40414F; /* Text color */
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 8px 16px;
+    transition: background-color 0.3s, color 0.3s;
+    border-radius: 5px; /* Rounded corners */
+    font-weight: bold;
+}
+
+#loginButton:hover {
+    background-color: #40414F; /* Darken background on hover */
+    color: #fff; /* Light text color on hover */
+}
+
+ /* ---------------------------------- */
+
+/* User Profile Section */
+#userProfile {
+    display: flex; /* Align image and name horizontally */
+    align-items: center;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #40414F;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    transition: opacity 0.3s ease-in-out;
+    border-radius: 5px;
+    animation: fadeIn 0.3s ease; /* Fade-in animation */
+}
+
+#userAvatar {
+    width: 50px; /* Increased avatar size */
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+#userName {
+    font-weight: bold;
+    color: #fff;
+    position: relative;
+    bottom: 20px;
+
+}
+
+#logoutButton {
+    background-color: transparent;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    display: none; /* Initially hidden */
+}
+
+#logoutButton:hover {
+    color: #ced4da;
+}
+
+/* Show logout button when user hovers over #userProfile */
+#userProfile:hover #logoutButton {
+    display: block;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* meow   */
+
+/* Media Queries for Responsive Design (no changes here) */
+@media screen and (max-width: 600px) {
+   /* User Profile Section */
+#userProfile {
+    display: flex; /* Align image and name horizontally */
+    align-items: center;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #40414F;
+    padding: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    transition: opacity 0.3s ease-in-out;
+    border-radius: 5px;
+}
+
+#userAvatar {
+    width: 30px; /* Reduced avatar size */
+    height: 30px;
+    border-radius: 100%;
+    margin-right: 10px;
+}
+
+#userName {
+    color: #fff;
+    /* Remove margin-right to align with image */
+    display: none; /* Initially hidden */
+    font-size: 0.8em; /* Adjust font size */
+    bottom: 0px;
+}
+
+#logoutButton {
+    background-color: transparent;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    display: none; /* Initially hidden */
+    font-size: 0.8em; /* Adjust font size */
+}
+
+/* Show name and logout button when user hovers over #userProfile */
+#userProfile:hover #userName,
+#userProfile:hover #logoutButton {
+    display: block;
+}
+}
+/* --------------------------- */
 
 header h1 {
     font-size: 1em;
@@ -38,7 +180,7 @@ header h1 {
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
     overflow-x: hidden;
     transition: 0.3s;
-    padding-top: 10px;
+    padding-top: 5px;
     z-index: 1000; /* Increase z-index value */
 }
 
@@ -188,10 +330,10 @@ hr {
 .icon-button-card1 {
     position: absolute;
     top: 30px; /* Moved further inside vertically */
-    font-size: 1.5rem; /* Adjust icon size */
-    width: 40px; /* Adjust button size */
-    height: 40px; /* Adjust button size */
-    border-radius: 50%; /* Rounded shape */
+    font-size: 1rem; /* Adjust icon size */
+    width: 50px; /* Adjust button size */
+    height: 50px; /* Adjust button size */
+    border-radius: 20%; /* Rounded shape */
     background-color: rgba(0, 0, 0, 0.5); /* Dark color with 50% transparency */
     border: none;
     cursor: pointer;
@@ -242,10 +384,10 @@ hr {
 .icon-button-card2 {
     position: absolute;
     top: 30px; /* Moved further inside vertically */
-    font-size: 1.5rem; /* Adjust icon size */
-    width: 40px; /* Adjust button size */
-    height: 40px; /* Adjust button size */
-    border-radius: 50%; /* Rounded shape */
+    font-size: 1rem; /* Adjust icon size */
+    width: 50px; /* Adjust button size */
+    height: 50px; /* Adjust button size */
+    border-radius: 20%; /* Rounded shape */
     background-color: rgba(0, 0, 0, 0.5); /* Dark color with 50% transparency */
     border: none;
     cursor: pointer;
@@ -363,7 +505,7 @@ hr {
     background-color: #FFFFFF; /* White background */
     color: rgba(0, 0, 0, 0.6);  /* Black icons/text */
     border: 2px solid transparent; /* Border for active state */
-    border-radius: 50%; /* Perfectly rounded background */
+    border-radius: 20%; /* Perfectly rounded background */
     width: 60px; /* Set width */
     height: 60px; /* Set height */
     margin: 10px;
@@ -431,7 +573,10 @@ hr {
 /* Mobile Devices */
 @media (max-width: 600px) {
     header h1 {
-        font-size: 2em;
+        font-size: 18px;
+        position: relative;
+        top: 20px;
+        left: 50px;
     }
 
     .hamburger {
@@ -447,16 +592,18 @@ hr {
     .sidebar.active {
         left: 0;
     }
-
+/* 
     .text-box-container {
         width: 80%;
         margin: 20px auto;
-        padding-left: 0;
+       
     }
 
     .generate {
-        right: 10px; /* Adjusted right position */
-    }
+        position: relative;
+        bottom: 25px;
+        left: 100px; 
+    } */
 
     .card-container {
         flex-direction: column;
@@ -473,15 +620,16 @@ hr {
         height: 40px;
     }
 
-    button#submit.generate{
-        left: 285px;
-    }
+
 }
 
 /* Tablets */
 @media (min-width: 601px) and (max-width: 992px) {
     header h1 {
-        font-size: 3em;
+        font-size: 2rem;
+        position: relative;
+        top: 15px;
+        left: 80px;
     }
 
     .hamburger {
@@ -497,15 +645,16 @@ hr {
         left: 0;
     }
 
-    .text-box-container {
+    /* .text-box-container {
         width: 70%;
         margin: 20px auto;
         padding-left: 0;
-    }
+    } */
 
-    .generate {
+    /* .generate {
         right: 15px;
-    }
+    } */
+
 
     .card-container {
         flex-direction: row;
@@ -523,9 +672,6 @@ hr {
         height: 50px;
     }
     
-    button#submit.generate{
-        left: 530px;
-    }
 }
 
 /* Desktops */
@@ -588,10 +734,53 @@ hr {
     }
 
     .text-box-container {
-        width: 55%; /* Same width as Card 1 */
-        margin: 20px 0 0 105px; /* Add left margin to move it right */
-        padding-left: 20px; /* Same left padding as Card 1 */
+        width: 58%; /* Same width as Card 1 */
+  /* Add left margin to move it right */
         position: relative; /* Ensure relative positioning for absolute child */
     }
     
+}
+
+
+/* Mobile Devices */
+@media (max-width: 600px) {
+    .text-box-container {
+        width: 80%;
+        margin: 20px auto;
+        padding-left: 0;
+        position: relative;
+    }
+
+    .text-box {
+        padding-right: 40px; /* Create space for the button */
+        font-size: 14px;
+    }
+
+    .generate {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+    }
+}
+
+/* Tablets */
+@media (min-width: 601px) and (max-width: 992px) {
+    .text-box-container {
+        width: 70%;
+        margin: 20px auto;
+        padding-left: 0;
+        position: relative;
+    }
+
+    .text-box {
+        padding-right: 50px; /* Create space for the button */
+    }
+
+    .generate {
+        position: absolute;
+        top: 50%;
+        right: 15px;
+        transform: translateY(-50%);
+    }
 }
