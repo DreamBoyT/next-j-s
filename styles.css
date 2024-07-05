@@ -620,6 +620,11 @@ hr {
         height: 40px;
     }
 
+    #HD, #Standard {
+         width: 40px;
+        height: 40px;
+    }
+
 
 }
 
@@ -753,7 +758,7 @@ hr {
 
     .text-box {
         padding-right: 40px; /* Create space for the button */
-        font-size: 14px;
+        font-size: 10px;
     }
 
     .generate {
