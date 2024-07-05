@@ -26,6 +26,7 @@
         <!-- <div class="logo-container">
             <img src="docu3c1.jpg" alt="AI Image Generator Logo">
         </div> -->
+           
 
         <h1>AI Image Generator</h1>
 
@@ -41,13 +42,15 @@
                 <div class="image-container card1-image-container"  style=" visibility: visible;">
                     <img src="image1.png" alt="Sample Image" class="card1-image">
                     <button class="icon-button-card1 recycle-button-card1" id="recycleButtonCard1">
-                        <i class="fas fa-sync-alt"></i>
+                        <i class="fas fa-download"></i>
                     </button>
                     <button class="icon-button-card1 delete-button-card1" id="deleteButtonCard1">
                         <i class="fas fa-trash-alt"></i>
                     </button>
         
-                    <button class="download-button-card1" id="downloadButtonCard1" style="font-weight: bold;">Download</button>
+                    <button class="download-button-card1" id="downloadButtonCard1">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
                 </div>
                
                 
@@ -59,8 +62,8 @@
                 <div class="image-container card2-image-container"  style=" visibility: visible;">
 
                     <img src="image2.png" alt="Sample Image" class="card2-image">
-                    <button class="icon-button-card2 copy-button-card2" id="copyButtonCard2" style="display: none;">
-                        <i class="fas fa-copy"></i>
+                    <button class="icon-button-card2 copy-button-card2" id="copyButtonCard2">
+                        <i class="fas fa-download"></i>
                     </button>                    
                     <button class="icon-button-card2 delete-button-card2" id="deleteButtonCard2">
                         <i class="fas fa-trash-alt"></i>
@@ -73,7 +76,7 @@
                         <i class="fas fa-arrow-right"></i>
                     </button>
         
-                    <button class="download-button-card2" id="downloadButtonCard2" style="font-weight: bold;">Download</button>
+                    <button class="download-button-card2" id="downloadButtonCard2" style="display: none;">Download</button>
 
                 </div>
             
@@ -81,7 +84,7 @@
         </div>
         <div class="text-box-container">
             <input type="text" class="text-box" id="promptInput" placeholder="Describe the image you want to create...">
-            <button class="generate" id="submit">
+            <button class="generate" id="submit" style="border-radius: 20%;  font-size: 1rem;">
                 <i class="far fa-paper-plane"></i> 
             </button> 
         </div>
@@ -102,10 +105,10 @@
         </div>
         <div id="field2">
             <h2>Image Quality</h2>
-            <button class="icon-btn" id="HD" onclick="toggleActive(this, 'quality')">
+            <button class="icon-btn" id="HD" onclick="toggleActive(this, 'quality')" style="border-radius: 20%;">
                 HD <!-- Text representation for HD -->
             </button>
-            <button class="icon-btn active" id="Standard" onclick="toggleActive(this, 'quality')">
+            <button class="icon-btn active" id="Standard" onclick="toggleActive(this, 'quality')" style="border-radius: 20%;">
                 SD <!-- Text representation for SD -->
             </button>
             <hr>
@@ -138,6 +141,8 @@
                
     </aside>
 
+   
+    <script src="https://alcdn.msauth.net/browser/2.17.0/js/msal-browser.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
