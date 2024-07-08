@@ -168,6 +168,16 @@ header h1 {
     left: 20px;
     font-size: 1.5em;
     cursor: pointer;
+    padding: 10px; 
+    width: 40px;
+     height: 40px;
+      background-color: rgba(0, 0, 0, 0.7);
+       color: #fff; 
+        border-radius: 50%;
+         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); 
+         display: flex; 
+         justify-content: center; 
+         align-items: center;
 }
 
 .sidebar {
@@ -472,13 +482,17 @@ hr {
 
 /* Unique Loader Styles */
 .unique-loading-spinner {
-    border: 16px solid #f3f3f3; /* Light grey */
-    border-top: 16px solid #40414F; 
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(0, 0, 0, 0.1);
+    border-top: 5px solid #6a6a6a;
     border-radius: 50%;
-    width: 120px;
-    height: 120px;
-    animation: unique-spin 2s linear infinite;
-    margin: 0 auto; /* Center the spinner */
+    animation: spin 1s linear infinite;
+    position: fixed; /* Position fixed for centering */
+    top: 45%; /* Center vertically */
+    left: calc(37% - 100px); /* Moves 20% to the left */
+    transform: translate(-50%, -50%);
+    z-index: 9999; /* Ensure it's above other content */
 }
 
 @keyframes unique-spin {
@@ -582,6 +596,8 @@ hr {
     .hamburger {
         font-size: 1em;
         left: 2px;
+        width: 40px;
+        height: 40px;
     }
 
     .sidebar {
@@ -617,11 +633,6 @@ hr {
 
     .icon-btn {
         width: 40px;
-        height: 40px;
-    }
-
-    #HD, #Standard {
-         width: 40px;
         height: 40px;
     }
 
@@ -699,9 +710,9 @@ hr {
     }
 
     .text-box-container {
-        width: 55%;
-        margin: 20px 0 0 65px;
-        padding-left: 20px;
+        width: 53%;
+        position: relative; /* Ensure relative positioning for absolute child */
+        left: 18px;
     }
 
     .generate {
@@ -739,9 +750,10 @@ hr {
     }
 
     .text-box-container {
-        width: 58%; /* Same width as Card 1 */
+        width: 53%; /* Same width as Card 1 */
   /* Add left margin to move it right */
         position: relative; /* Ensure relative positioning for absolute child */
+        left: 36px;
     }
     
 }
@@ -758,7 +770,7 @@ hr {
 
     .text-box {
         padding-right: 40px; /* Create space for the button */
-        font-size: 10px;
+        font-size: 14px;
     }
 
     .generate {
@@ -767,6 +779,8 @@ hr {
         right: 10px;
         transform: translateY(-50%);
     }
+
+ 
 }
 
 /* Tablets */
