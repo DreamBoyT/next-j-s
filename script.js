@@ -5,8 +5,10 @@ let isGenerating = false;
 
 // Function to toggle the sidebar
 function toggleSidebar() {
-    document.getElementById("sidebar").classList.toggle("active");
+    const sidebar = document.getElementById("sidebar");
+    sidebar.classList.remove("active");
 }
+
 
 // Event listener for the submit button in the prompt field
 document.getElementById("submit").addEventListener("click", () => {
