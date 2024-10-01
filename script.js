@@ -1,11 +1,5 @@
 let isGenerating = false;
 
-// Function to toggle the sidebar
-function toggleSidebar() {
-  const sidebar = document.getElementById("sidebar");
-  sidebar.classList.remove("active");
-}
-
 // Event listener for the submit button in the prompt field
 document.getElementById("submit").addEventListener("click", () => {
   if (!isGenerating) {
@@ -146,6 +140,11 @@ function generateImage() {
   }
 
   fetchImageWithRetry();
+}
+
+function toggleSidebar() {
+  const sidebar = document.getElementById("sidebar");
+  sidebar.classList.remove("active");
 }
 
 function resizeImage(url, width, height) {
