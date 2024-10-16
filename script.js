@@ -30,13 +30,13 @@ async function generateImage() {
     imageContainerCard1.innerHTML = "";  
     imageContainerCard1.appendChild(loadingSpinnerCard1);  
   
-    const imageContainerCard2 = document.querySelector("#card2 .card2-image-container"); // No loading spinner for card2; it retains the previous image  
+    const imageContainerCard2 = document.querySelector("#card2 .card2-image-container");  
   
-    const retryCount = 3; // Number of retries  
-    const initialDelay = 1000; // Initial delay in milliseconds  
+    const retryCount = 3;  
+    const initialDelay = 1000;  
   
     async function fetchImageWithRetry(currentRetry = 0) {  
-        isGenerating = true; // Set flag to true to prevent multiple requests  
+        isGenerating = true;  
         try {  
             const response = await fetch("https://dall-ts.azurewebsites.net/api/httpTriggerts", {  
                 method: "POST",  
@@ -55,10 +55,10 @@ async function generateImage() {
             if (data.imageUrls) {  
                 const url = data.imageUrls[0];  
                 await handleImageLoad(url, prompt, size, imageContainerCard1, imageContainerCard2, loadingSpinnerCard1);  
-                isGenerating = false; // Reset flag after successful image load  
+                isGenerating = false;  
             } else {  
                 handleImageError(imageContainerCard1, loadingSpinnerCard1);  
-                isGenerating = false; // Reset flag on error  
+                isGenerating = false;  
             }  
         } catch (error) {  
             console.error("Error generating image:", error);  
@@ -67,12 +67,11 @@ async function generateImage() {
                 setTimeout(() => fetchImageWithRetry(currentRetry + 1), delay);  
             } else {  
                 handleImageError(imageContainerCard1, loadingSpinnerCard1, true);  
-                isGenerating = false; // Reset flag after retries  
+                isGenerating = false;  
             }  
         }  
     }  
   
-    // Initial fetch attempt  
     fetchImageWithRetry();  
 }  
   
@@ -88,18 +87,17 @@ async function handleImageLoad(url, prompt, size, imageContainerCard1, imageCont
   
     imgCard1.onload = () => {  
         loadingSpinnerCard1.remove();  
-        imageContainerCard1.innerHTML = ""; // Clear loading spinner  
+        imageContainerCard1.innerHTML = "";  
         imageContainerCard1.appendChild(imgCard1);  
         appendButtons();  
         recycleButton.disabled = false;  
         deleteButton.disabled = false;  
-        currentImageUrl = imgCard1.src; // Store the current image URL  
+        currentImageUrl = imgCard1.src;  
   
-        // Load image in card2 after imgCard1 is loaded  
-        imageContainerCard2.innerHTML = ""; // Clear previous image  
+        imageContainerCard2.innerHTML = "";  
         imageContainerCard2.appendChild(imgCard2);  
         appendCard3Buttons();  
-        updateCarouselImages(url); // Update the carousel images with the new image URL  
+        updateCarouselImages(url);  
     };  
   
     imgCard1.onerror = imgCard2.onerror = () => {  
@@ -214,32 +212,35 @@ document.querySelectorAll(".icon-btn").forEach(button => {
         this.classList.add("active");  
     });  
 });  
-
+  
 // Event listener for the download button in Card 1  
 downloadButton.addEventListener('click', async () => {  
     const imgElement = document.querySelector("#card1 .card1-image");  
+    const size = document.querySelector("#field3 .icon-btn.active")?.id || "Square";  
+    const dimensions = getImageDimensions(size);  
+  
     if (imgElement && imgElement.src) {  
+        const resizedUrl = await resizeImage(imgElement.src, dimensions.width, dimensions.height);  
         const link = document.createElement('a');  
-        link.href = imgElement.src;  
-        link.download = 'downloaded_image.png'; // Specify a download name  
+        link.href = resizedUrl;  
+        link.download = 'downloaded_image.png';  
         link.click();  
     } else {  
         alert("No image available to download.");  
     }  
 });  
- 
   
 // Event listener for the delete button in Card 2  
 deleteButton.addEventListener('click', () => {  
     const imageContainer = document.querySelector("#card1 .card1-image-container");  
-    imageContainer.innerHTML = ""; // Clear the current image  
+    imageContainer.innerHTML = "";  
     const sampleImage = new Image();  
-    sampleImage.src = "image1.png"; // Path to the sample image  
+    sampleImage.src = "image1.png";  
     sampleImage.alt = "Sample Image";  
     sampleImage.classList.add("card2-image");  
     imageContainer.appendChild(sampleImage);  
-    appendButtons(); // Re-append the buttons  
-    currentImageUrl = ""; // Clear the current image URL  
+    appendButtons();  
+    currentImageUrl = "";  
 });  
   
 // Event listener for the recycle button in Card 2  
@@ -253,7 +254,7 @@ recycleButton.addEventListener('click', () => {
         card3Images.unshift(card3Image);  
         displayCard3Image(0);  
         generateImage();  
-        card3ImageContainer.scrollTop = 0; // Scroll to the top  
+        card3ImageContainer.scrollTop = 0;  
     } else if (!currentImageUrl) {  
         alert("No image to regenerate.");  
     }  
@@ -273,7 +274,7 @@ generate.addEventListener('click', () => {
     if (!isGenerating) {  
         generateImage();  
     }  
-    card3ImageContainer.scrollTop = 0; // Scroll to the top  
+    card3ImageContainer.scrollTop = 0;  
 });  
   
 // Event listener for the left arrow button in Card 3  
@@ -301,7 +302,7 @@ function displayCard3Image(index) {
         appendCard3Buttons();  
     } else {  
         const sampleImage = new Image();  
-        sampleImage.src = "image2.png"; // Path to the default image  
+        sampleImage.src = "image2.png";  
         sampleImage.alt = "Sample Image";  
         sampleImage.classList.add("card2-image");  
         card3ImageContainer.appendChild(sampleImage);  
@@ -378,7 +379,6 @@ window.addEventListener('DOMContentLoaded', () => {
         }  
     });  
 });  
- 
   
 // Event listener for the Enter key in the prompt input field  
 document.getElementById('promptInput').addEventListener('keydown', function (event) {  
