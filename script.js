@@ -220,15 +220,21 @@ downloadButton.addEventListener('click', async () => {
     const dimensions = getImageDimensions(size);  
   
     if (imgElement && imgElement.src) {  
-        const resizedUrl = await resizeImage(imgElement.src, dimensions.width, dimensions.height);  
-        const link = document.createElement('a');  
-        link.href = resizedUrl;  
-        link.download = 'downloaded_image.png';  
-        link.click();  
+        try {  
+            const resizedUrl = await resizeImage(imgElement.src, dimensions.width || imgElement.width, dimensions.height || imgElement.height);  
+            const link = document.createElement('a');  
+            link.href = resizedUrl;  
+            link.download = 'downloaded_image.png';  
+            link.click();  
+        } catch (error) {  
+            console.error("Error resizing image:", error);  
+            alert("Failed to download the image.");  
+        }  
     } else {  
         alert("No image available to download.");  
     }  
 });  
+ 
   
 // Event listener for the delete button in Card 2  
 deleteButton.addEventListener('click', () => {  
