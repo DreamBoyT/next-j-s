@@ -38,7 +38,7 @@ async function generateImage() {
     async function fetchImageWithRetry(currentRetry = 0) {  
         isGenerating = true; // Set flag to true to prevent multiple requests  
         try {  
-            const response = await fetch("https://dall-ts.azurewebsites.net/api/httpTriggerts", {  
+            const response = await fetch("https://testdall.azurewebsites.net/api/httpTriggerts", {  
                 method: "POST",  
                 headers: {  
                     "Content-Type": "application/json",  
@@ -358,18 +358,30 @@ function toggleActive(button, group) {
     };  
   
     const buttons = document.querySelectorAll(`#field${groupMap[group]} .icon-btn`);  
-    buttons.forEach(btn => {  
-        if (btn !== button) {  
-            btn.classList.remove('active');  
+    buttons.forEach(btn => btn.classList.remove('active'));  
+  
+    button.classList.add('active');  
+}  
+  
+// Ensure the correct button is highlighted on page load  
+window.addEventListener('DOMContentLoaded', () => {  
+    ['style', 'quality', 'size', 'guide'].forEach(group => {  
+        const groupMap = {  
+            style: 1,  
+            quality: 2,  
+            size: 3,  
+            guide: 4  
+        };  
+        const activeButton = document.querySelector(`#field${groupMap[group]} .icon-btn.active`);  
+        if (!activeButton) {  
+            const defaultButton = document.querySelector(`#field${groupMap[group]} .icon-btn`);  
+            if (defaultButton) {  
+                defaultButton.classList.add('active');  
+            }  
         }  
     });  
-  
-    if (button.classList.contains('active')) {  
-        button.classList.remove('active');  
-    } else {  
-        button.classList.add('active');  
-    }  
-}  
+});  
+ 
   
 // Event listener for the Enter key in the prompt input field  
 document.getElementById('promptInput').addEventListener('keydown', function (event) {  
