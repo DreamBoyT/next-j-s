@@ -532,7 +532,9 @@ hr {
 }  
   
 .icon-btn.active {  
-    border: 2px solid #000000; /* Black border for active state */  
+  border: 2px solid #000000; /* Black border for active state */  
+  background-color: #929292; /* Optional: Add a distinct background */  
+  color: #fff; /* Optional: Change text color */  
 }  
   
 .icon-btn i {  
