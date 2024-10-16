@@ -38,7 +38,7 @@ async function generateImage() {
     async function fetchImageWithRetry(currentRetry = 0) {  
         isGenerating = true; // Set flag to true to prevent multiple requests  
         try {  
-            const response = await fetch("https://dall-ts.azurewebsites.net/api/httpTriggerts", {  
+            const response = await fetch("https://testdall.azurewebsites.net/api/httpTriggerts", {  
                 method: "POST",  
                 headers: {  
                     "Content-Type": "application/json",  
@@ -214,23 +214,20 @@ document.querySelectorAll(".icon-btn").forEach(button => {
         this.classList.add("active");  
     });  
 });  
-  
-// Event listener for the download button in Card 2  
+
+// Event listener for the download button in Card 1  
 downloadButton.addEventListener('click', async () => {  
-    if (currentImageUrl) {  
-        const size = document.querySelector("#field3 .icon-btn.active")?.id || "";  
-        const dimensions = getImageDimensions(size);  
-        const resizedUrl = await resizeImage(currentImageUrl, dimensions.width, dimensions.height);  
-          
+    const imgElement = document.querySelector("#card1 .card1-image");  
+    if (imgElement && imgElement.src) {  
         const link = document.createElement('a');  
-        link.href = resizedUrl;  
-        link.download = 'generated_image.png'; // You can change the default download name  
-        link.target = '_blank'; // Open in a new tab  
+        link.href = imgElement.src;  
+        link.download = 'downloaded_image.png'; // Specify a download name  
         link.click();  
     } else {  
-        alert("No image to download.");  
+        alert("No image available to download.");  
     }  
 });  
+ 
   
 // Event listener for the delete button in Card 2  
 deleteButton.addEventListener('click', () => {  
