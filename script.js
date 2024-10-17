@@ -12,7 +12,6 @@ document.getElementById("submit").addEventListener("click", () => {
     }  
 });  
   
-// --------------------------------  
 async function generateImage() {  
     const prompt = document.getElementById("promptInput").value;  
     const style = document.querySelector("#field1 .icon-btn.active")?.id || "";  
@@ -54,7 +53,7 @@ async function generateImage() {
   
             if (data.imageUrls) {  
                 const url = data.imageUrls[0];  
-                await handleImageLoad(url, prompt, size, imageContainerCard1, imageContainerCard2, loadingSpinnerCard1);  
+                await handleImageLoad(url, prompt, style, quality, size, imageContainerCard1, imageContainerCard2, loadingSpinnerCard1);  
                 isGenerating = false;  
             } else {  
                 handleImageError(imageContainerCard1, loadingSpinnerCard1);  
@@ -75,7 +74,7 @@ async function generateImage() {
     fetchImageWithRetry();  
 }  
   
-async function handleImageLoad(url, prompt, size, imageContainerCard1, imageContainerCard2, loadingSpinnerCard1) {  
+async function handleImageLoad(url, prompt, style, quality, size, imageContainerCard1, imageContainerCard2, loadingSpinnerCard1) {  
     const imgCard1 = new Image();  
     const imgCard2 = new Image();  
     imgCard1.src = url;  
@@ -97,7 +96,7 @@ async function handleImageLoad(url, prompt, size, imageContainerCard1, imageCont
         imageContainerCard2.innerHTML = "";  
         imageContainerCard2.appendChild(imgCard2);  
         appendCard3Buttons();  
-        updateCarouselImages(url);  
+        updateCarouselImages(url, style, quality, size);  
     };  
   
     imgCard1.onerror = imgCard2.onerror = () => {  
@@ -136,7 +135,6 @@ function handleImageError(imageContainerCard1, loadingSpinnerCard1, isRetryExcee
         </span>`;  
 }  
   
-// ----------------------------------------------  
 // Function to resize image  
 function resizeImage(url, width, height) {  
     return new Promise((resolve, reject) => {  
@@ -217,21 +215,25 @@ document.querySelectorAll(".icon-btn").forEach(button => {
 downloadButton.addEventListener('click', async () => {  
     const imgElement = document.querySelector("#card1 .card1-image");  
     const size = document.querySelector("#field3 .icon-btn.active")?.id || "Square";  
+    const style = document.querySelector("#field1 .icon-btn.active")?.id || "default";  
+    const quality = document.querySelector("#field2 .icon-btn.active")?.id || "default";  
     const dimensions = getImageDimensions(size);  
   
     if (imgElement && imgElement.src) {  
         try {  
             const resizedUrl = await resizeImage(imgElement.src, dimensions.width || imgElement.width, dimensions.height || imgElement.height);  
-            const newTab = window.open();  
-            newTab.document.body.innerHTML = `<img src="${resizedUrl}" alt="Generated Image">`; // Open the image in a new tab  
+            const link = document.createElement('a');  
+            link.href = resizedUrl;  
+            link.download = `image_${style}_${quality}_${size}.png`; // Meaningful file name  
+            link.click();  
         } catch (error) {  
             console.error("Error resizing image:", error);  
-            alert("Failed to display the image.");  
+            alert("Failed to download the image.");  
         }  
     } else {  
-        alert("No image available to display.");  
+        alert("No image available to download.");  
     }  
-});   
+});  
   
 // Event listener for the delete button in Card 2  
 deleteButton.addEventListener('click', () => {  
@@ -316,10 +318,14 @@ function displayCard3Image(index) {
 // Event listener for the download button in Card 3  
 downloadButtonCard3.addEventListener('click', () => {  
     if (card3Images.length > 0 && currentCard3ImageIndex >= 0 && currentCard3ImageIndex < card3Images.length) {  
+        const currentImage = card3Images[currentCard3ImageIndex];  
+        const style = currentImage.dataset.style || "default";  
+        const quality = currentImage.dataset.quality || "default";  
+        const size = currentImage.dataset.size || "default";  
+  
         const link = document.createElement('a');  
-        link.href = card3Images[currentCard3ImageIndex].src;  
-        link.download = 'generated_image.png';  
-        link.target = '_blank';  
+        link.href = currentImage.src;  
+        link.download = `image_${style}_${quality}_${size}.png`; // Meaningful file name  
         link.click();  
     } else {  
         alert("No image to download.");  
@@ -391,11 +397,16 @@ document.getElementById('promptInput').addEventListener('keydown', function (eve
 });  
   
 // Function to update the carousel images array  
-function updateCarouselImages(url) {  
+function updateCarouselImages(url, style, quality, size) {  
     const card3Image = new Image();  
     card3Image.src = url;  
     card3Image.alt = "Generated Image";  
     card3Image.classList.add("card2-image");  
+  
+    // Store the features as data attributes  
+    card3Image.dataset.style = style;  
+    card3Image.dataset.quality = quality;  
+    card3Image.dataset.size = size;  
   
     card3Images.unshift(card3Image);  
     currentCard3ImageIndex = 0;  
