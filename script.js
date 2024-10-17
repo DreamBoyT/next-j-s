@@ -222,7 +222,8 @@ downloadButton.addEventListener('click', async () => {
     if (imgElement && imgElement.src) {  
         try {  
             const resizedUrl = await resizeImage(imgElement.src, dimensions.width || imgElement.width, dimensions.height || imgElement.height);  
-            window.open(resizedUrl, '_blank');  // Open the image in a new tab  
+            const newTab = window.open();  
+            newTab.document.body.innerHTML = `<img src="${resizedUrl}" alt="Generated Image">`; // Open the image in a new tab  
         } catch (error) {  
             console.error("Error resizing image:", error);  
             alert("Failed to display the image.");  
@@ -230,9 +231,7 @@ downloadButton.addEventListener('click', async () => {
     } else {  
         alert("No image available to display.");  
     }  
-});  
-
- 
+});   
   
 // Event listener for the delete button in Card 2  
 deleteButton.addEventListener('click', () => {  
