@@ -303,13 +303,30 @@ function displayCard3Image(index) {
     }  
 }  
   
+// Function to update the carousel images array  
+function updateCarouselImages(url, style, quality, size) {  
+    const card3Image = new Image();  
+    card3Image.src = url;  
+    card3Image.alt = "Generated Image";  
+    card3Image.classList.add("card2-image");  
+  
+    // Store the features as data attributes with defaults if needed  
+    card3Image.dataset.style = style || "default_style";  
+    card3Image.dataset.quality = quality || "default_quality";  
+    card3Image.dataset.size = size || "Square";  
+  
+    card3Images.unshift(card3Image);  
+    currentCard3ImageIndex = 0;  
+    displayCard3Image(currentCard3ImageIndex);  
+}  
+  
 // Event listener for the download button in Card 3  
 downloadButtonCard3.addEventListener('click', async () => {  
     if (card3Images.length > 0 && currentCard3ImageIndex >= 0 && currentCard3ImageIndex < card3Images.length) {  
         const currentImage = card3Images[currentCard3ImageIndex];  
-        const style = currentImage.dataset.style || "default_style"; // Use specific default if needed  
-        const quality = currentImage.dataset.quality || "default_quality"; // Use specific default if needed  
-        const size = currentImage.dataset.size || "Square"; // Ensure default size is consistent  
+        const style = currentImage.dataset.style;  
+        const quality = currentImage.dataset.quality;  
+        const size = currentImage.dataset.size;  
         const dimensions = getImageDimensions(size);  
   
         if (currentImage.src) {  
@@ -329,7 +346,7 @@ downloadButtonCard3.addEventListener('click', async () => {
     } else {  
         alert("No image to download.");  
     }  
-});    
+});      
   
 // Event listener for the delete button in Card 3  
 deleteButtonCard3.addEventListener('click', () => {  
@@ -393,21 +410,4 @@ document.getElementById('promptInput').addEventListener('keydown', function (eve
     if (event.key === 'Enter' && !isGenerating) {  
         document.getElementById('submit').click();  
     }  
-});  
-  
-// Function to update the carousel images array  
-function updateCarouselImages(url, style, quality, size) {  
-    const card3Image = new Image();  
-    card3Image.src = url;  
-    card3Image.alt = "Generated Image";  
-    card3Image.classList.add("card2-image");  
-  
-    // Store the features as data attributes  
-    card3Image.dataset.style = style;  
-    card3Image.dataset.quality = quality;  
-    card3Image.dataset.size = size;  
-  
-    card3Images.unshift(card3Image);  
-    currentCard3ImageIndex = 0;  
-    displayCard3Image(currentCard3ImageIndex);  
-}  
+});   
