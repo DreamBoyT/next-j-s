@@ -1,6 +1,6 @@
 let isGenerating = false;  
   
-// Function to toggle the sidebar  
+// Toggle the sidebar  
 function toggleSidebar() {  
     document.getElementById("sidebar").classList.toggle("active");  
 }  
@@ -29,8 +29,6 @@ async function generateImage() {
     imageContainerCard1.innerHTML = "";  
     imageContainerCard1.appendChild(loadingSpinnerCard1);  
   
-    const imageContainerCard2 = document.querySelector("#card2 .card2-image-container");  
-  
     const retryCount = 3;  
     const initialDelay = 1000;  
   
@@ -53,7 +51,7 @@ async function generateImage() {
   
             if (data.imageUrls) {  
                 const url = data.imageUrls[0];  
-                await handleImageLoad(url, prompt, style, quality, size, imageContainerCard1, imageContainerCard2, loadingSpinnerCard1);  
+                await handleImageLoad(url, prompt, style, quality, size, imageContainerCard1, loadingSpinnerCard1);  
                 isGenerating = false;  
             } else {  
                 handleImageError(imageContainerCard1, loadingSpinnerCard1);  
@@ -74,15 +72,11 @@ async function generateImage() {
     fetchImageWithRetry();  
 }  
   
-async function handleImageLoad(url, prompt, style, quality, size, imageContainerCard1, imageContainerCard2, loadingSpinnerCard1) {  
+async function handleImageLoad(url, prompt, style, quality, size, imageContainerCard1, loadingSpinnerCard1) {  
     const imgCard1 = new Image();  
-    const imgCard2 = new Image();  
     imgCard1.src = url;  
-    imgCard2.src = url;  
     imgCard1.alt = prompt;  
-    imgCard2.alt = prompt;  
     imgCard1.classList.add("card1-image");  
-    imgCard2.classList.add("card2-image");  
   
     imgCard1.onload = () => {  
         loadingSpinnerCard1.remove();  
@@ -93,13 +87,10 @@ async function handleImageLoad(url, prompt, style, quality, size, imageContainer
         deleteButton.disabled = false;  
         currentImageUrl = imgCard1.src;  
   
-        imageContainerCard2.innerHTML = "";  
-        imageContainerCard2.appendChild(imgCard2);  
-        appendCard3Buttons();  
         updateCarouselImages(url, style, quality, size);  
     };  
   
-    imgCard1.onerror = imgCard2.onerror = () => {  
+    imgCard1.onerror = () => {  
         handleImageError(imageContainerCard1, loadingSpinnerCard1);  
     };  
 }  
@@ -135,7 +126,6 @@ function handleImageError(imageContainerCard1, loadingSpinnerCard1, isRetryExcee
         </span>`;  
 }  
   
-// Function to resize image  
 function resizeImage(url, width, height) {  
     return new Promise((resolve, reject) => {  
         const img = new Image();  
@@ -184,7 +174,6 @@ deleteButton.disabled = true;
   
 let currentImageUrl = ""; // Store the current generated image URL  
   
-// Ensure buttons are positioned on top of the image  
 function appendButtons() {  
     const imageContainer = document.querySelector("#card1 .card1-image-container");  
     imageContainer.appendChild(recycleButton);  
@@ -192,7 +181,6 @@ function appendButtons() {
     imageContainer.appendChild(downloadButton);  
 }  
   
-// Ensure buttons are positioned on top of the image in Card 3  
 function appendCard3Buttons() {  
     const card3ImageContainer = document.querySelector(".card2-image-container");  
     card3ImageContainer.appendChild(leftArrowButtonCard3);  
@@ -316,17 +304,24 @@ function displayCard3Image(index) {
 }  
   
 // Event listener for the download button in Card 3  
-downloadButtonCard3.addEventListener('click', () => {  
+downloadButtonCard3.addEventListener('click', async () => {  
     if (card3Images.length > 0 && currentCard3ImageIndex >= 0 && currentCard3ImageIndex < card3Images.length) {  
         const currentImage = card3Images[currentCard3ImageIndex];  
         const style = currentImage.dataset.style || "default";  
         const quality = currentImage.dataset.quality || "default";  
         const size = currentImage.dataset.size || "default";  
+        const dimensions = getImageDimensions(size);  
   
-        const link = document.createElement('a');  
-        link.href = currentImage.src;  
-        link.download = `image_${style}_${quality}_${size}.png`; // Meaningful file name  
-        link.click();  
+        try {  
+            const resizedUrl = await resizeImage(currentImage.src, dimensions.width, dimensions.height);  
+            const link = document.createElement('a');  
+            link.href = resizedUrl;  
+            link.download = `image_${style}_${quality}_${size}.png`; // Meaningful file name  
+            link.click();  
+        } catch (error) {  
+            console.error("Error resizing image:", error);  
+            alert("Failed to download the image.");  
+        }  
     } else {  
         alert("No image to download.");  
     }  
