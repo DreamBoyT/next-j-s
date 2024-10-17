@@ -222,18 +222,16 @@ downloadButton.addEventListener('click', async () => {
     if (imgElement && imgElement.src) {  
         try {  
             const resizedUrl = await resizeImage(imgElement.src, dimensions.width || imgElement.width, dimensions.height || imgElement.height);  
-            const link = document.createElement('a');  
-            link.href = resizedUrl;  
-            link.download = 'downloaded_image.png';  
-            link.click();  
+            window.open(resizedUrl, '_blank');  // Open the image in a new tab  
         } catch (error) {  
             console.error("Error resizing image:", error);  
-            alert("Failed to download the image.");  
+            alert("Failed to display the image.");  
         }  
     } else {  
-        alert("No image available to download.");  
+        alert("No image available to display.");  
     }  
 });  
+
  
   
 // Event listener for the delete button in Card 2  
