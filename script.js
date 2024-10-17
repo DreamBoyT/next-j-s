@@ -307,25 +307,29 @@ function displayCard3Image(index) {
 downloadButtonCard3.addEventListener('click', async () => {  
     if (card3Images.length > 0 && currentCard3ImageIndex >= 0 && currentCard3ImageIndex < card3Images.length) {  
         const currentImage = card3Images[currentCard3ImageIndex];  
-        const style = currentImage.dataset.style || "default";  
-        const quality = currentImage.dataset.quality || "default";  
-        const size = currentImage.dataset.size || "default";  
+        const style = currentImage.dataset.style || "default_style"; // Use specific default if needed  
+        const quality = currentImage.dataset.quality || "default_quality"; // Use specific default if needed  
+        const size = currentImage.dataset.size || "Square"; // Ensure default size is consistent  
         const dimensions = getImageDimensions(size);  
   
-        try {  
-            const resizedUrl = await resizeImage(currentImage.src, dimensions.width, dimensions.height);  
-            const link = document.createElement('a');  
-            link.href = resizedUrl;  
-            link.download = `image_${style}_${quality}_${size}.png`; // Meaningful file name  
-            link.click();  
-        } catch (error) {  
-            console.error("Error resizing image:", error);  
-            alert("Failed to download the image.");  
+        if (currentImage.src) {  
+            try {  
+                const resizedUrl = await resizeImage(currentImage.src, dimensions.width, dimensions.height);  
+                const link = document.createElement('a');  
+                link.href = resizedUrl;  
+                link.download = `image_${style}_${quality}_${size}.png`; // Meaningful file name  
+                link.click();  
+            } catch (error) {  
+                console.error("Error resizing image:", error);  
+                alert("Failed to download the image.");  
+            }  
+        } else {  
+            alert("No image to download.");  
         }  
     } else {  
         alert("No image to download.");  
     }  
-});  
+});    
   
 // Event listener for the delete button in Card 3  
 deleteButtonCard3.addEventListener('click', () => {  
