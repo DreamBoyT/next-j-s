@@ -376,8 +376,7 @@ function toggleActive(button, group) {
     const groupMap = {  
         style: 1,  
         quality: 2,  
-        size: 3,  
-        guide: 4  
+        size: 3
     };  
   
     const buttons = document.querySelectorAll(`#field${groupMap[group]} .icon-btn`);  
